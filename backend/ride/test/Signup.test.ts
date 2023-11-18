@@ -1,3 +1,4 @@
+import { AccountDAO } from "../src/AccountDAO";
 import { GetAccount } from "../src/GetAccount";
 import { Signup } from "../src/Signup";
 
@@ -11,12 +12,17 @@ describe("Signup", () => {
   });
 
   it("should be able to create account", async () => {
+    jest.spyOn(AccountDAO.prototype, 'save').mockResolvedValueOnce()
+    jest.spyOn(AccountDAO.prototype, 'getByEmail').mockResolvedValueOnce(null)
+
     const inputSignup = {
       name: "John Doe",
       email: `johndoe${Math.random()}@mail.com`,
       cpf: "56318596020",
       isPassenger: true,
     };
+
+    jest.spyOn(AccountDAO.prototype, 'getById').mockResolvedValueOnce(inputSignup)
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);
@@ -80,6 +86,9 @@ describe("Signup", () => {
   });
 
   it("should be able to create driver account", async () => {
+    jest.spyOn(AccountDAO.prototype, 'save').mockResolvedValueOnce()
+    jest.spyOn(AccountDAO.prototype, 'getByEmail').mockResolvedValueOnce(null)
+
     const inputSignup = {
       name: "John Doe",
       email: `johndoe${Math.random()}@mail.com`,
@@ -87,6 +96,8 @@ describe("Signup", () => {
       carPlate: "BBB1234",
       isDriver: true,
     };
+
+    jest.spyOn(AccountDAO.prototype, 'getById').mockResolvedValueOnce(inputSignup)
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);

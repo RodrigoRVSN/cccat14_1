@@ -1,5 +1,6 @@
-import { AccountDAO } from "../src/AccountDAO";
+import { AccountDAODatabase } from "../src/AccountDAODatabase";
 import { GetAccount } from "../src/GetAccount";
+import { LoggerConsole } from "../src/LoggerConsole";
 import { Signup } from "../src/Signup";
 
 let signup: Signup;
@@ -7,13 +8,15 @@ let getAccount: GetAccount;
 
 describe("Signup", () => {
   beforeEach(() => {
-    signup = new Signup();
-    getAccount = new GetAccount();
+    const accountDAO = new AccountDAODatabase();
+    const logger = new LoggerConsole();
+    signup = new Signup(accountDAO, logger);
+    getAccount = new GetAccount(accountDAO);
   });
 
   it("should be able to create account", async () => {
-    jest.spyOn(AccountDAO.prototype, 'save').mockResolvedValueOnce()
-    jest.spyOn(AccountDAO.prototype, 'getByEmail').mockResolvedValueOnce(null)
+    jest.spyOn(AccountDAODatabase.prototype, 'save').mockResolvedValueOnce()
+    jest.spyOn(AccountDAODatabase.prototype, 'getByEmail').mockResolvedValueOnce(null)
 
     const inputSignup = {
       name: "John Doe",
@@ -22,7 +25,7 @@ describe("Signup", () => {
       isPassenger: true,
     };
 
-    jest.spyOn(AccountDAO.prototype, 'getById').mockResolvedValueOnce(inputSignup)
+    jest.spyOn(AccountDAODatabase.prototype, 'getById').mockResolvedValueOnce(inputSignup)
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);
@@ -86,8 +89,8 @@ describe("Signup", () => {
   });
 
   it("should be able to create driver account", async () => {
-    jest.spyOn(AccountDAO.prototype, 'save').mockResolvedValueOnce()
-    jest.spyOn(AccountDAO.prototype, 'getByEmail').mockResolvedValueOnce(null)
+    jest.spyOn(AccountDAODatabase.prototype, 'save').mockResolvedValueOnce()
+    jest.spyOn(AccountDAODatabase.prototype, 'getByEmail').mockResolvedValueOnce(null)
 
     const inputSignup = {
       name: "John Doe",
@@ -97,7 +100,7 @@ describe("Signup", () => {
       isDriver: true,
     };
 
-    jest.spyOn(AccountDAO.prototype, 'getById').mockResolvedValueOnce(inputSignup)
+    jest.spyOn(AccountDAODatabase.prototype, 'getById').mockResolvedValueOnce(inputSignup)
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);

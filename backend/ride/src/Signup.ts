@@ -1,11 +1,14 @@
-import { AccountDAO } from "./AccountDAO";
+import { SignupAccountDAO } from "./SignupAccountDAO";
 import { isValidCpf } from "./CpfValidator";
+import { Logger } from "./Logger";
 
 export class Signup {
-  accountDAO: AccountDAO
+  accountDAO: SignupAccountDAO
+  logger: Logger
 
-  constructor() {
-    this.accountDAO = new AccountDAO();
+  constructor(accountDAO: SignupAccountDAO, logger: Logger) {
+    this.accountDAO = accountDAO
+    this.logger = logger
   }
 
   isInvalidName = (name: string) => !name.match(/[a-zA-Z] [a-zA-Z]+/);

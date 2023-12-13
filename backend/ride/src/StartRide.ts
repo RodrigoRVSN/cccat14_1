@@ -1,8 +1,8 @@
 import { RideDAO } from "./RideDAO";
-import { AccountDAO } from "./AccountDAO";
+import { AccountRepository } from "./AccountRepository";
 
 export class StartRide {
-  constructor(private rideDAO: RideDAO, private accountDAO: AccountDAO) { }
+  constructor(private rideDAO: RideDAO, private AccountRepository: AccountRepository) { }
 
   async execute(input: any) {
     const ride = await this.rideDAO.getById(input.rideId);

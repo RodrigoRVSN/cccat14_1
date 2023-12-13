@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { Signup } from "./Signup";
 import { GetAccount } from "./GetAccount";
-import { AccountDAODatabase } from "./AccountDAODatabase";
+import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
 import { LoggerConsole } from "./LoggerConsole";
 
 const app = express();
@@ -10,9 +10,9 @@ app.use(express.json());
 app.post("/signup", async (req: Request, res: Response) => {
 	try {
 		const input = req.body;
-		const accountDAO = new AccountDAODatabase();
+		const AccountRepository = new AccountRepositoryDatabase();
 		const logger = new LoggerConsole();
-		const signup = new Signup(accountDAO, logger)
+		const signup = new Signup(AccountRepository, logger)
 		const output = await signup.execute(input);
 		res.json(output);
 	} catch (error: any) {
@@ -22,8 +22,8 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.get("/accounts/:accountId", async (req: Request, res: Response) => {
 	const { accountId } = req.params;
-	const accountDAO = new AccountDAODatabase();
-	const getAccount = new GetAccount(accountDAO)
+	const AccountRepository = new AccountRepositoryDatabase();
+	const getAccount = new GetAccount(AccountRepository)
 	const account = await getAccount.execute(accountId);
 	res.json(account);
 });

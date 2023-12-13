@@ -1,10 +1,10 @@
-import { GetAccountDAO } from "./GetAccountDAO";
+import { AccountRepository } from "./AccountRepository";
 
 export class GetAccount {
-  constructor(private accountDAO: GetAccountDAO) { }
+  constructor(private AccountRepository: AccountRepository) { }
 
   execute = async (accountId: string) => {
-    const account = this.accountDAO.getById(accountId);
+    const account = this.AccountRepository.getById(accountId);
     return account;
   };
 }

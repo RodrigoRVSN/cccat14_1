@@ -1,4 +1,5 @@
-import { AccountDAODatabase } from "../src/AccountDAODatabase";
+import { Account } from "../src/Account";
+import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetAccount } from "../src/GetAccount";
 import { LoggerConsole } from "../src/LoggerConsole";
 import { Signup } from "../src/Signup";
@@ -8,15 +9,19 @@ let getAccount: GetAccount;
 
 describe("Signup", () => {
   beforeEach(() => {
-    const accountDAO = new AccountDAODatabase();
+    const AccountRepository = new AccountRepositoryDatabase();
     const logger = new LoggerConsole();
-    signup = new Signup(accountDAO, logger);
-    getAccount = new GetAccount(accountDAO);
+    signup = new Signup(AccountRepository, logger);
+    getAccount = new GetAccount(AccountRepository);
   });
 
   it("should be able to create account", async () => {
-    jest.spyOn(AccountDAODatabase.prototype, 'save').mockResolvedValueOnce()
-    jest.spyOn(AccountDAODatabase.prototype, 'getByEmail').mockResolvedValueOnce(null)
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "save")
+      .mockResolvedValueOnce();
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "getByEmail")
+      .mockResolvedValueOnce(undefined);
 
     const inputSignup = {
       name: "John Doe",
@@ -25,14 +30,25 @@ describe("Signup", () => {
       isPassenger: true,
     };
 
-    jest.spyOn(AccountDAODatabase.prototype, 'getById').mockResolvedValueOnce(inputSignup)
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "getById")
+      .mockResolvedValueOnce(
+        Account.create(
+          inputSignup.name,
+          inputSignup.email,
+          inputSignup.cpf,
+          "",
+          inputSignup.isPassenger,
+          false
+        )
+      );
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);
 
     expect(accountId).toBeDefined();
-    expect(account.name).toBe(inputSignup.name);
-    expect(account.email).toBe(inputSignup.email);
+    expect(account?.name).toBe(inputSignup.name);
+    expect(account?.email).toBe(inputSignup.email);
   });
 
   it("should not be able to create account with invalid CPF", async () => {
@@ -89,8 +105,12 @@ describe("Signup", () => {
   });
 
   it("should be able to create driver account", async () => {
-    jest.spyOn(AccountDAODatabase.prototype, 'save').mockResolvedValueOnce()
-    jest.spyOn(AccountDAODatabase.prototype, 'getByEmail').mockResolvedValueOnce(null)
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "save")
+      .mockResolvedValueOnce();
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "getByEmail")
+      .mockResolvedValueOnce(undefined);
 
     const inputSignup = {
       name: "John Doe",
@@ -100,14 +120,25 @@ describe("Signup", () => {
       isDriver: true,
     };
 
-    jest.spyOn(AccountDAODatabase.prototype, 'getById').mockResolvedValueOnce(inputSignup)
+    jest
+      .spyOn(AccountRepositoryDatabase.prototype, "getById")
+      .mockResolvedValueOnce(
+        Account.create(
+          inputSignup.name,
+          inputSignup.email,
+          inputSignup.cpf,
+          inputSignup.carPlate,
+          false,
+          inputSignup.isDriver
+        )
+      );
 
     const { accountId } = await signup.execute(inputSignup);
     const account = await getAccount.execute(accountId);
 
     expect(accountId).toBeDefined();
-    expect(account.name).toBe(inputSignup.name);
-    expect(account.email).toBe(inputSignup.email);
+    expect(account?.name).toBe(inputSignup.name);
+    expect(account?.email).toBe(inputSignup.email);
   });
 
   it("should not be able to create driver account with invalid car plate", async () => {

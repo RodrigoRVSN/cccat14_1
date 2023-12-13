@@ -1,5 +1,5 @@
 import { AcceptRide } from "../src/AcceptRide";
-import { AccountDAODatabase } from "../src/AccountDAODatabase";
+import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetRide } from "../src/GetRide";
 import { LoggerConsole } from "../src/LoggerConsole";
 import { RequestRide } from "../src/RequestRide";
@@ -13,12 +13,12 @@ let acceptRide: AcceptRide;
 
 describe("Accept ride", () => {
   beforeEach(() => {
-    const accountDAO = new AccountDAODatabase();
+    const AccountRepository = new AccountRepositoryDatabase();
     const rideDAO = new RideDAODatabase();
     const logger = new LoggerConsole();
-    signup = new Signup(accountDAO, logger);
-    requestRide = new RequestRide(rideDAO, accountDAO, logger);
-    acceptRide = new AcceptRide(rideDAO, accountDAO);
+    signup = new Signup(AccountRepository, logger);
+    requestRide = new RequestRide(rideDAO, AccountRepository, logger);
+    acceptRide = new AcceptRide(rideDAO, AccountRepository);
     getRide = new GetRide(rideDAO, logger);
   });
 

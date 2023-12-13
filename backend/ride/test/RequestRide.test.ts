@@ -2,7 +2,7 @@ import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetRide } from "../src/GetRide";
 import { LoggerConsole } from "../src/LoggerConsole";
 import { RequestRide } from "../src/RequestRide";
-import { RideDAODatabase } from "../src/RideDAODatabase";
+import { RideRepositoryDatabase } from "../src/RideRepositoryDatabase";
 import { Signup } from "../src/Signup";
 
 let signup: Signup;
@@ -12,11 +12,11 @@ let getRide: GetRide;
 describe("Request ride", () => {
   beforeEach(() => {
     const AccountRepository = new AccountRepositoryDatabase();
-    const rideDAO = new RideDAODatabase();
+    const RideRepository = new RideRepositoryDatabase();
     const logger = new LoggerConsole();
     signup = new Signup(AccountRepository, logger);
-    requestRide = new RequestRide(rideDAO, AccountRepository, logger);
-    getRide = new GetRide(rideDAO, logger);
+    requestRide = new RequestRide(RideRepository, AccountRepository, logger);
+    getRide = new GetRide(RideRepository, logger);
   });
 
   it("should be able to request a ride", async () => {
@@ -38,7 +38,7 @@ describe("Request ride", () => {
     const outputRequestRide = await requestRide.execute(inputRequestRide);
     expect(outputRequestRide.rideId).toBeDefined();
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide.status).toBe("requested");
+    expect(outputGetRide?.getStatus()).toBe("requested");
   });
 
   it("should not be able to request a ride if the account doesn't exists", async () => {

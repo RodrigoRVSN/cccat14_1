@@ -1,15 +1,15 @@
-import { RideDAO } from "./RideDAO";
+import { RideRepository } from "./RideRepository";
 import { AccountRepository } from "./AccountRepository";
 
 export class AcceptRide {
-  constructor(private rideDAO: RideDAO, private AccountRepository: AccountRepository) { }
+  constructor(private rideRepository: RideRepository, private accountRepository: AccountRepository) { }
 
   async execute(input: any) {
-    const account = await this.AccountRepository.getById(input.driverId)
+    const account = await this.accountRepository.getById(input.driverId)
     if (!account?.isDriver) throw new Error('Only drivers can accept rides')
-    const ride = await this.rideDAO.getById(input.rideId);
-    ride.status = "accepted";
-    ride.driverId = input.driverId;
-    await this.rideDAO.update(ride);
+    const ride = await this.rideRepository.getById(input.rideId);
+    if (!ride) throw new Error("Ride not found")
+    ride.accept(input.driverId)
+    await this.rideRepository.update(ride);
   }
 }

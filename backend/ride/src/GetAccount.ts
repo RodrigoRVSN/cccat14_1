@@ -1,10 +1,10 @@
 import { AccountRepository } from "./AccountRepository";
 
 export class GetAccount {
-  constructor(private AccountRepository: AccountRepository) { }
+  constructor(private accountRepository: AccountRepository) { }
 
   execute = async (accountId: string) => {
-    const account = this.AccountRepository.getById(accountId);
+    const account = this.accountRepository.getById(accountId);
     return account;
   };
 }

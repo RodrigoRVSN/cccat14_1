@@ -3,7 +3,7 @@ import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetRide } from "../src/GetRide";
 import { LoggerConsole } from "../src/LoggerConsole";
 import { RequestRide } from "../src/RequestRide";
-import { RideDAODatabase } from "../src/RideDAODatabase";
+import { RideRepositoryDatabase } from "../src/RideRepositoryDatabase";
 import { Signup } from "../src/Signup";
 import { StartRide } from "../src/StartRide";
 
@@ -15,14 +15,14 @@ let startRide: StartRide;
 
 describe("Start ride", () => {
   beforeEach(() => {
-    const AccountRepository = new AccountRepositoryDatabase();
-    const rideDAO = new RideDAODatabase();
+    const accountRepository = new AccountRepositoryDatabase();
+    const rideRepository = new RideRepositoryDatabase();
     const logger = new LoggerConsole();
-    signup = new Signup(AccountRepository, logger);
-    requestRide = new RequestRide(rideDAO, AccountRepository, logger);
-    acceptRide = new AcceptRide(rideDAO, AccountRepository);
-    startRide = new StartRide(rideDAO, AccountRepository);
-    getRide = new GetRide(rideDAO, logger);
+    signup = new Signup(accountRepository, logger);
+    requestRide = new RequestRide(rideRepository, accountRepository, logger);
+    acceptRide = new AcceptRide(rideRepository, accountRepository);
+    startRide = new StartRide(rideRepository);
+    getRide = new GetRide(rideRepository, logger);
   });
 
   it("should be able to start a ride", async () => {
@@ -62,6 +62,6 @@ describe("Start ride", () => {
     };
     await startRide.execute(inputStartRide);
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide.status).toBe("in_progress");
+    expect(outputGetRide?.getStatus()).toBe("in_progress");
   });
 });

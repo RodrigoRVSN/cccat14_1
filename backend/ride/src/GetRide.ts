@@ -1,12 +1,12 @@
 import { Logger } from "./Logger";
-import { RideDAO } from "./RideDAO";
+import { RideRepository } from "./RideRepository";
 
 export class GetRide {
-  constructor(private rideDAO: RideDAO, private logger: Logger) { }
+  constructor(private rideRepository: RideRepository, private logger: Logger) { }
 
   async execute(rideId: string) {
     this.logger.log(`getRide`);
-    const ride = await this.rideDAO.getById(rideId)
+    const ride = await this.rideRepository.getById(rideId)
     return ride
   }
 }

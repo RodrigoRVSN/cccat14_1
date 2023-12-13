@@ -3,7 +3,7 @@ import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetRide } from "../src/GetRide";
 import { LoggerConsole } from "../src/LoggerConsole";
 import { RequestRide } from "../src/RequestRide";
-import { RideDAODatabase } from "../src/RideDAODatabase";
+import { RideRepositoryDatabase } from "../src/RideRepositoryDatabase";
 import { Signup } from "../src/Signup";
 
 let signup: Signup;
@@ -14,12 +14,12 @@ let acceptRide: AcceptRide;
 describe("Accept ride", () => {
   beforeEach(() => {
     const AccountRepository = new AccountRepositoryDatabase();
-    const rideDAO = new RideDAODatabase();
+    const RideRepository = new RideRepositoryDatabase();
     const logger = new LoggerConsole();
     signup = new Signup(AccountRepository, logger);
-    requestRide = new RequestRide(rideDAO, AccountRepository, logger);
-    acceptRide = new AcceptRide(rideDAO, AccountRepository);
-    getRide = new GetRide(rideDAO, logger);
+    requestRide = new RequestRide(RideRepository, AccountRepository, logger);
+    acceptRide = new AcceptRide(RideRepository, AccountRepository);
+    getRide = new GetRide(RideRepository, logger);
   });
 
   it("should be able to accept a ride", async () => {
@@ -55,11 +55,9 @@ describe("Accept ride", () => {
     };
     await acceptRide.execute(inputAcceptRide);
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide.status).toBe("accepted");
-    expect(outputGetRide.driver_id).toBe(outputSignupDriver.accountId);
+    expect(outputGetRide?.getStatus()).toBe("accepted");
+    expect(outputGetRide?.getDriverId()).toBe(outputSignupDriver.accountId);
   });
-
-
 
   it("should not be able to accept a ride if account is not of a driver", async () => {
     const inputSignupPassenger = {
@@ -90,6 +88,8 @@ describe("Accept ride", () => {
       rideId: outputRequestRide.rideId,
       driverId: outputSignupDriver.accountId,
     };
-    await expect(() => acceptRide.execute(inputAcceptRide)).rejects.toThrow(new Error('Only drivers can accept rides'))
+    await expect(() => acceptRide.execute(inputAcceptRide)).rejects.toThrow(
+      new Error("Only drivers can accept rides")
+    );
   });
 });

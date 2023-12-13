@@ -29,4 +29,14 @@ export class RideDAODatabase implements RideDAO {
     await connection.$pool.end();
     return ride;
   }
+
+  async getActiveRideByPassengerId(passengerId: string) {
+    const connection = pgp()("postgres://postgres:123456@localhost:5432/app");
+    const [ride] = await connection.query(
+      "select * from cccat14.ride where passenger_id = $1 and status in ('requested', 'accepted', 'progress')",
+      [passengerId]
+    );
+    await connection.$pool.end();
+    return ride;
+  }
 }

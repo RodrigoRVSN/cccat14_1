@@ -7,30 +7,42 @@ import { PgPromiseAdapter } from "../src/infra/database/PgPromiseAdapter";
 import { RequestRide } from "../src/application/usecase/RequestRide";
 import { RideRepositoryDatabase } from "../src/infra/repository/RideRepositoryDatabase";
 import { Signup } from "../src/application/usecase/Signup";
+import { StartRide } from "../src/application/usecase/StartRide";
+import { UpdatePosition } from "../src/application/usecase/UpdatePosition";
+import { PositionRepositoryDatabase } from "../src/infra/repository/PositionRepositoryDatabase";
 
 let signup: Signup;
 let requestRide: RequestRide;
 let getRide: GetRide;
 let acceptRide: AcceptRide;
+let startRide: StartRide;
 let databaseConnection: DatabaseConnection;
+let updatePosition: UpdatePosition;
 
-describe("Accept ride", () => {
+describe("Update position", () => {
   beforeEach(() => {
-    databaseConnection = new PgPromiseAdapter()
+    databaseConnection = new PgPromiseAdapter();
     const accountRepository = new AccountRepositoryDatabase(databaseConnection);
-    const RideRepository = new RideRepositoryDatabase(databaseConnection);
+    const rideRepository = new RideRepositoryDatabase(databaseConnection);
+    const positionRepository = new PositionRepositoryDatabase(
+      databaseConnection
+    );
     const logger = new LoggerConsole();
     signup = new Signup(accountRepository, logger);
-    requestRide = new RequestRide(RideRepository, accountRepository, logger);
-    acceptRide = new AcceptRide(RideRepository, accountRepository);
-    getRide = new GetRide(RideRepository, logger);
+    requestRide = new RequestRide(rideRepository, accountRepository, logger);
+    acceptRide = new AcceptRide(rideRepository, accountRepository);
+    startRide = new StartRide(rideRepository);
+    updatePosition = new UpdatePosition(rideRepository, positionRepository);
+
+    getRide = new GetRide(rideRepository, logger);
   });
 
-  afterEach(async () => {
-    await databaseConnection.close();
-  })
+  afterEach(() => {
+    databaseConnection.close();
+  });
 
-  it("should be able to accept a ride", async () => {
+
+  it("should be able to update the position", async () => {
     const inputSignupPassenger = {
       name: "John Doe",
       email: `john.doe${Math.random()}@gmail.com`,
@@ -62,12 +74,16 @@ describe("Accept ride", () => {
       driverId: outputSignupDriver.accountId,
     };
     await acceptRide.execute(inputAcceptRide);
-    const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide.status).toBe("accepted");
-    expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId);
+    await startRide.execute(inputAcceptRide)
+    const inputUpdateRide = {
+      rideId: outputRequestRide.rideId,
+      lat: -27.584905257808835,
+      long: -48.545022195325124,
+    };
+    await updatePosition.execute(inputUpdateRide)
   });
 
-  it("should not be able to accept a ride if account is not of a driver", async () => {
+  it("should not be able to update the position if the ride is not in progress", async () => {
     const inputSignupPassenger = {
       name: "John Doe",
       email: `john.doe${Math.random()}@gmail.com`,
@@ -88,7 +104,9 @@ describe("Accept ride", () => {
       name: "John Doe",
       email: `john.doe${Math.random()}@gmail.com`,
       cpf: "97456321558",
-      isPassenger: true,
+      carPlate: "BBB1234",
+      isPassenger: false,
+      isDriver: true,
       password: "123456",
     };
     const outputSignupDriver = await signup.execute(inputSignupDriver);
@@ -96,8 +114,14 @@ describe("Accept ride", () => {
       rideId: outputRequestRide.rideId,
       driverId: outputSignupDriver.accountId,
     };
-    await expect(() => acceptRide.execute(inputAcceptRide)).rejects.toThrow(
-      new Error("Only drivers can accept rides")
+    await acceptRide.execute(inputAcceptRide);
+    const inputUpdateRide = {
+      rideId: outputRequestRide.rideId,
+      lat: -27.584905257808835,
+      long: -48.545022195325124,
+    };
+    await expect(() => updatePosition.execute(inputUpdateRide)).rejects.toThrow(
+      "The ride is not in progress"
     );
   });
 });

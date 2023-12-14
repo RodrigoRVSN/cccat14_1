@@ -48,7 +48,7 @@ describe("Request ride", () => {
     const outputRequestRide = await requestRide.execute(inputRequestRide);
     expect(outputRequestRide.rideId).toBeDefined();
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide?.getStatus()).toBe("requested");
+    expect(outputGetRide.status).toBe("requested");
   });
 
   it("should not be able to request a ride if the account doesn't exists", async () => {

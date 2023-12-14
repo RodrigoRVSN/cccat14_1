@@ -70,6 +70,6 @@ describe("Start ride", () => {
     };
     await startRide.execute(inputStartRide);
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-    expect(outputGetRide?.getStatus()).toBe("in_progress");
+    expect(outputGetRide.status).toBe("in_progress");
   });
 });

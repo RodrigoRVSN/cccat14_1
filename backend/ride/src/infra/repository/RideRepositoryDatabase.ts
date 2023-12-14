@@ -1,4 +1,3 @@
-import pgp from "pg-promise";
 import { RideRepository } from "../../application/repository/RideRepository";
 import Ride from "../../domain/Ride";
 import { DatabaseConnection } from "../database/DatabaseConnection";

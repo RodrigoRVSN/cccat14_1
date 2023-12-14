@@ -1,7 +1,9 @@
 import { AcceptRide } from "../src/AcceptRide";
 import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
+import { DatabaseConnection } from "../src/DatabaseConnection";
 import { GetRide } from "../src/GetRide";
 import { LoggerConsole } from "../src/LoggerConsole";
+import { PgPromiseAdapter } from "../src/PgPromiseAdapter";
 import { RequestRide } from "../src/RequestRide";
 import { RideRepositoryDatabase } from "../src/RideRepositoryDatabase";
 import { Signup } from "../src/Signup";
@@ -12,17 +14,23 @@ let requestRide: RequestRide;
 let getRide: GetRide;
 let acceptRide: AcceptRide;
 let startRide: StartRide;
+let databaseConnection: DatabaseConnection;
 
 describe("Start ride", () => {
   beforeEach(() => {
-    const accountRepository = new AccountRepositoryDatabase();
-    const rideRepository = new RideRepositoryDatabase();
+    databaseConnection = new PgPromiseAdapter();
+    const accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    const rideRepository = new RideRepositoryDatabase(databaseConnection);
     const logger = new LoggerConsole();
     signup = new Signup(accountRepository, logger);
     requestRide = new RequestRide(rideRepository, accountRepository, logger);
     acceptRide = new AcceptRide(rideRepository, accountRepository);
     startRide = new StartRide(rideRepository);
     getRide = new GetRide(rideRepository, logger);
+  });
+
+  afterEach(() => {
+    databaseConnection.close();
   });
 
   it("should be able to start a ride", async () => {

@@ -3,6 +3,7 @@ import { Signup } from "./Signup";
 import { GetAccount } from "./GetAccount";
 import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
 import { LoggerConsole } from "./LoggerConsole";
+import { PgPromiseAdapter } from "./PgPromiseAdapter";
 
 const app = express();
 app.use(express.json());
@@ -10,9 +11,10 @@ app.use(express.json());
 app.post("/signup", async (req: Request, res: Response) => {
 	try {
 		const input = req.body;
-		const AccountRepository = new AccountRepositoryDatabase();
+		const databaseConnection = new PgPromiseAdapter()
+		const accountRepository = new AccountRepositoryDatabase(databaseConnection);
 		const logger = new LoggerConsole();
-		const signup = new Signup(AccountRepository, logger)
+		const signup = new Signup(accountRepository, logger)
 		const output = await signup.execute(input);
 		res.json(output);
 	} catch (error: any) {
@@ -22,8 +24,9 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.get("/accounts/:accountId", async (req: Request, res: Response) => {
 	const { accountId } = req.params;
-	const AccountRepository = new AccountRepositoryDatabase();
-	const getAccount = new GetAccount(AccountRepository)
+	const databaseConnection = new PgPromiseAdapter()
+	const accountRepository = new AccountRepositoryDatabase(databaseConnection);
+	const getAccount = new GetAccount(accountRepository)
 	const account = await getAccount.execute(accountId);
 	res.json(account);
 });

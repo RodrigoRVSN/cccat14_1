@@ -1,19 +1,28 @@
 import { Account } from "../src/Account";
 import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
+import { DatabaseConnection } from "../src/DatabaseConnection";
 import { GetAccount } from "../src/GetAccount";
 import { LoggerConsole } from "../src/LoggerConsole";
+import { PgPromiseAdapter } from "../src/PgPromiseAdapter";
 import { Signup } from "../src/Signup";
 
 let signup: Signup;
 let getAccount: GetAccount;
+let databaseConnection: DatabaseConnection;
 
 describe("Signup", () => {
   beforeEach(() => {
-    const AccountRepository = new AccountRepositoryDatabase();
+    databaseConnection = new PgPromiseAdapter()
+    const accountRepository = new AccountRepositoryDatabase(databaseConnection);
     const logger = new LoggerConsole();
-    signup = new Signup(AccountRepository, logger);
-    getAccount = new GetAccount(AccountRepository);
+    signup = new Signup(accountRepository, logger);
+    getAccount = new GetAccount(accountRepository);
   });
+
+  afterEach(() => {
+    databaseConnection.close();
+  })
+
 
   it("should be able to create account", async () => {
     jest

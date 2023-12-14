@@ -1,10 +1,10 @@
-import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
-import { ExpressAdapter } from "./ExpressAdapter";
-import { GetAccount } from "./GetAccount";
-import { LoggerConsole } from "./LoggerConsole";
-import { MainController } from "./MainController";
-import { PgPromiseAdapter } from "./PgPromiseAdapter";
-import { Signup } from "./Signup";
+import { AccountRepositoryDatabase } from "./infra/repository/AccountRepositoryDatabase";
+import { ExpressAdapter } from "./infra/http/ExpressAdapter";
+import { GetAccount } from "./application/usecase/GetAccount";
+import { LoggerConsole } from "./infra/logger/LoggerConsole";
+import { MainController } from "./infra/controller/MainController";
+import { PgPromiseAdapter } from "./infra/database/PgPromiseAdapter";
+import { Signup } from "./application/usecase/Signup";
 
 const httpServer = new ExpressAdapter()
 const databaseConnection = new PgPromiseAdapter();

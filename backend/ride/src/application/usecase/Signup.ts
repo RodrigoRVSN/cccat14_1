@@ -1,6 +1,7 @@
-import { Logger } from "./Logger";
-import { Account } from "./Account";
-import { AccountRepository } from "./AccountRepository";
+import { Account } from "../../domain/Account";
+import { Logger } from "../logger/Logger";
+import { AccountRepository } from "../repository/AccountRepository";
+
 
 type Input = {
   name: string;

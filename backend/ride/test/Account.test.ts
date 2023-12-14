@@ -1,4 +1,4 @@
-import { Account } from "../src/Account";
+import { Account } from "../src/domain/Account";
 
 describe('Account', () => {
   it("should be able to create an account", function () {

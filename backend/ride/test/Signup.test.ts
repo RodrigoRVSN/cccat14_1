@@ -1,10 +1,10 @@
-import { Account } from "../src/Account";
-import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
-import { DatabaseConnection } from "../src/DatabaseConnection";
-import { GetAccount } from "../src/GetAccount";
-import { LoggerConsole } from "../src/LoggerConsole";
-import { PgPromiseAdapter } from "../src/PgPromiseAdapter";
-import { Signup } from "../src/Signup";
+import { Account } from "../src/domain/Account";
+import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepositoryDatabase";
+import { DatabaseConnection } from "../src/infra/database/DatabaseConnection";
+import { GetAccount } from "../src/application/usecase/GetAccount";
+import { LoggerConsole } from "../src/infra/logger/LoggerConsole";
+import { PgPromiseAdapter } from "../src/infra/database/PgPromiseAdapter";
+import { Signup } from "../src/application/usecase/Signup";
 
 let signup: Signup;
 let getAccount: GetAccount;

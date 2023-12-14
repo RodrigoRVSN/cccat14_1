@@ -1,4 +1,4 @@
-import { isValidCpf } from "../src/CpfValidator";
+import { isValidCpf } from "../src/domain/CpfValidator";
 
 describe("CpfValidator", () => {
   it.each(["56318596020", "26120036067", "19915748000"])(

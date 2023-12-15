@@ -19,12 +19,11 @@ export class PositionRepositoryDatabase implements PositionRepository {
     );
   }
 
-  async listByRideId(rideId: string): Promise<Position[] | undefined> {
+  async listByRideId(rideId: string): Promise<Position[]> {
     const positionsData = await this.connection.query(
       "select * from cccat14.position where ride_id = $1 order by date",
       [rideId]
     );
-
     const positions: Position[] = [];
     for (const positionData of positionsData) {
       positions.push(

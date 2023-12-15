@@ -1,7 +1,11 @@
+import { Coord } from "./Coord";
+import DistanceCalculator from "./DistanceCalculator";
+import { FareCalculatorFactory } from "./FareCalculator";
+import Position from "./Position";
 import { RideStatus, RideStatusFactory } from "./RideStatus";
 
 export default class Ride {
-  status: RideStatus
+  status: RideStatus;
 
   constructor(
     readonly rideId: string,
@@ -12,10 +16,12 @@ export default class Ride {
     readonly fromLat: number,
     readonly fromLong: number,
     readonly toLat: number,
-    readonly toLong: number
+    readonly toLong: number,
+    private fare: number = 0,
+    private distance: number = 0,
+    private lastPosition?: Coord
   ) {
-    this.status = RideStatusFactory.create(status, this)
-
+    this.status = RideStatusFactory.create(status, this);
   }
 
   static create(
@@ -27,7 +33,7 @@ export default class Ride {
   ) {
     const rideId = crypto.randomUUID();
     const driverId = "";
-    const status = "requested"
+    const status = "requested";
     const date = new Date();
     return new Ride(
       rideId,
@@ -51,11 +57,39 @@ export default class Ride {
     this.status.start();
   }
 
+  finish() {
+    const fareCalculator = FareCalculatorFactory.create(this.date);
+    this.fare = fareCalculator.calculate(this.distance);
+    this.status.finish();
+  }
+
+  updatePosition(position: Position) {
+    if (this.lastPosition) {
+      this.distance += DistanceCalculator.calculate(
+        this.lastPosition,
+        position.coord
+      );
+    }
+    this.lastPosition = position.coord;
+  }
+
   getStatus() {
     return this.status.value;
   }
 
   getDriverId() {
     return this.driverId;
+  }
+
+  getFare() {
+    return this.fare;
+  }
+
+  getDistance() {
+    return this.distance;
+  }
+
+  getLastPosition() {
+    return this.lastPosition;
   }
 }

@@ -41,7 +41,6 @@ describe("Update position", () => {
     databaseConnection.close();
   });
 
-
   it("should be able to update the position", async () => {
     const inputSignupPassenger = {
       name: "John Doe",
@@ -74,13 +73,13 @@ describe("Update position", () => {
       driverId: outputSignupDriver.accountId,
     };
     await acceptRide.execute(inputAcceptRide);
-    await startRide.execute(inputAcceptRide)
+    await startRide.execute(inputAcceptRide);
     const inputUpdateRide = {
       rideId: outputRequestRide.rideId,
       lat: -27.584905257808835,
       long: -48.545022195325124,
     };
-    await updatePosition.execute(inputUpdateRide)
+    await updatePosition.execute(inputUpdateRide);
   });
 
   it("should not be able to update the position if the ride is not in progress", async () => {

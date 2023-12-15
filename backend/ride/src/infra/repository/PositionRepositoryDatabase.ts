@@ -1,6 +1,7 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
 import { PositionRepository } from "../../application/repository/PositionRepository";
 import Position from "../../domain/Position";
+import { Coord } from "../../domain/Coord";
 
 export class PositionRepositoryDatabase implements PositionRepository {
   constructor(readonly connection: DatabaseConnection) { }
@@ -11,8 +12,8 @@ export class PositionRepositoryDatabase implements PositionRepository {
       [
         position.positionId,
         position.rideId,
-        position.lat,
-        position.long,
+        position.coord.lat,
+        position.coord.long,
         position.date,
       ]
     );
@@ -30,8 +31,10 @@ export class PositionRepositoryDatabase implements PositionRepository {
         new Position(
           positionData.position_id,
           positionData.ride_id,
-          parseFloat(positionData.lat),
-          parseFloat(positionData.long),
+          new Coord(
+            parseFloat(positionData.lat),
+            parseFloat(positionData.long)
+          ),
           positionData.date
         )
       );

@@ -1,17 +1,17 @@
-import { isValidCpf } from "../src/domain/CpfValidator";
+import { Cpf } from "../src/domain/Cpf";
 
 describe("CpfValidator", () => {
   it.each(["56318596020", "26120036067", "19915748000"])(
-    "should be able to create account",
+    "should test valid CPF %s",
     async (cpf: string) => {
-      expect(isValidCpf(cpf)).toBeTruthy();
+      expect(new Cpf(cpf)).toBeTruthy();
     }
   );
 
   it.each(["", undefined, null, "11111111111", "111", "11111111111111"])(
-    "should not be able to create account with invalid CPF",
+    "should test invalid CPF %s",
     async (cpf: any) => {
-      expect(isValidCpf(cpf)).toBeFalsy();
+      expect(() => new Cpf(cpf)).toThrowError("Invalid CPF");
     }
   );
 });

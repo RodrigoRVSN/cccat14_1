@@ -1,3 +1,4 @@
+import { Transaction } from "../../domain/Transaction";
 import { Model, column, model } from "./ORM";
 
 @model("cccat14", "transaction")
@@ -27,7 +28,6 @@ export class TransactionModel extends Model {
   }
 
   getEntity() {
-    return Transaction.restore(this.transactionId, this.rideId, this.amount, this.date, this.status);
+    return new Transaction(this.transactionId, this.rideId, this.amount, this.date, this.status);
   }
-
 }

@@ -120,7 +120,7 @@ describe("Update position", () => {
       long: -48.545022195325124,
     };
     await expect(() => updatePosition.execute(inputUpdateRide)).rejects.toThrow(
-      "The ride is not in progress"
+      "To update position ride must be in progress"
     );
   });
 });

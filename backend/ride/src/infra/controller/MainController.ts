@@ -1,26 +1,33 @@
 import { GetAccount } from "../../application/usecase/GetAccount";
 import { Signup } from "../../application/usecase/Signup";
-import { Registry } from "../di/Registry";
+import { inject } from "../di/Registry";
 import { HttpServer } from "../http/HttpServer";
 
 export class MainController {
-  constructor(
-    registry: Registry
-  ) {
-    const httpServer = registry.inject('httpServer');
-    const signup = registry.inject('signup');
-    const getAccount = registry.inject('getAccount');
+  @inject("httpServer")
+  httpServer?: HttpServer;
+  @inject("signup")
+  signup?: Signup;
+  @inject("getAccount")
+  getAccount?: GetAccount;
 
-    httpServer.register("post", "/signup", async (params: any, body: any) => {
-      console.log({ body })
-      const output = await signup.execute(body);
-      return output;
-    });
+  constructor() {
+    this.httpServer?.register(
+      "post",
+      "/signup",
+      async (params: any, body: any) => {
+        const output = await this.signup?.execute(body);
+        return output;
+      }
+    );
 
-    httpServer.register("get", "/accounts/:accountId", async (params: any, body: any) => {
-      console.log({ params })
-      const output = await getAccount.execute(params.accountId);
-      return output;
-    });
+    this.httpServer?.register(
+      "get",
+      "/accounts/:accountId",
+      async (params: any, body: any) => {
+        const output = await this.getAccount?.execute(params.accountId);
+        return output;
+      }
+    );
   }
 }

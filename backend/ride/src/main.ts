@@ -16,10 +16,10 @@ const logger = new LoggerConsole();
 const signup = new Signup(accountRepository, logger);
 const getAccount = new GetAccount(accountRepository);
 
-const registry = new Registry()
+const registry = Registry.getInstance()
 registry.register("httpServer", httpServer)
 registry.register("signup", signup)
 registry.register("getAccount", getAccount)
 
-new MainController(registry);
+new MainController();
 httpServer.listen(3000)

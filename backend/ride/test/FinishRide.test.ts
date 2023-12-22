@@ -11,6 +11,7 @@ import { PositionRepositoryDatabase } from "../src/infra/repository/PositionRepo
 import { FinishRide } from "../src/application/usecase/FinishRide";
 import { AccountGatewayHttp } from "../src/infra/gateway/AccountGatewayHttp";
 import { AccountGateway } from "../src/application/gateway/AccountGateway";
+import { PaymentGatewayHttp } from "../src/infra/gateway/PaymentGatewayHttp";
 
 let requestRide: RequestRide;
 let getRide: GetRide;
@@ -35,7 +36,8 @@ describe("FinishRide", () => {
     acceptRide = new AcceptRide(rideDAO, accountGateway);
     startRide = new StartRide(rideDAO);
     updatePosition = new UpdatePosition(rideDAO, positionRepository);
-    finishRide = new FinishRide(rideDAO);
+    const paymentGateway = new PaymentGatewayHttp()
+    finishRide = new FinishRide(rideDAO, paymentGateway);
   });
 
   afterEach(async () => {

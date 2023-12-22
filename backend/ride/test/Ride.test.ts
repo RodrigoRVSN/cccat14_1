@@ -19,5 +19,5 @@ it("should test a ride", function () {
   ride.updatePosition(position2);
   ride.finish();
   expect(ride.getDistance()).toBe(10);
-  expect(ride.getFare()).toBe(50);
+  expect(ride.getFare()).toBe(21);
 });

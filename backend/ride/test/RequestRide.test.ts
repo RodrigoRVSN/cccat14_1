@@ -1,33 +1,29 @@
-import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepositoryDatabase";
 import { DatabaseConnection } from "../src/infra/database/DatabaseConnection";
 import { GetRide } from "../src/application/usecase/GetRide";
 import { LoggerConsole } from "../src/infra/logger/LoggerConsole";
 import { PgPromiseAdapter } from "../src/infra/database/PgPromiseAdapter";
 import { RequestRide } from "../src/application/usecase/RequestRide";
 import { RideRepositoryDatabase } from "../src/infra/repository/RideRepositoryDatabase";
-import { Signup } from "../src/application/usecase/Signup";
+import { AccountGatewayHttp } from "../src/infra/gateway/AccountGatewayHttp";
 
-let signup: Signup;
 let requestRide: RequestRide;
 let getRide: GetRide;
 let databaseConnection: DatabaseConnection;
+let accountGateway: AccountGatewayHttp
 
 describe("Request ride", () => {
   beforeEach(() => {
-    databaseConnection = new PgPromiseAdapter()
-    const accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    databaseConnection = new PgPromiseAdapter();
     const RideRepository = new RideRepositoryDatabase(databaseConnection);
     const logger = new LoggerConsole();
-    signup = new Signup(accountRepository, logger);
-    requestRide = new RequestRide(RideRepository, accountRepository, logger);
+    accountGateway = new AccountGatewayHttp();
+    requestRide = new RequestRide(RideRepository, accountGateway, logger);
     getRide = new GetRide(RideRepository, logger);
   });
 
-
   afterEach(() => {
     databaseConnection.close();
-  })
-
+  });
 
   it("should be able to request a ride", async () => {
     const inputSignup = {
@@ -37,7 +33,7 @@ describe("Request ride", () => {
       isPassenger: true,
       password: "123456",
     };
-    const outputSignup = await signup.execute(inputSignup);
+    const outputSignup = await accountGateway.signup(inputSignup);
     const inputRequestRide = {
       passengerId: outputSignup.accountId,
       fromLat: -27.584905257808835,
@@ -74,7 +70,7 @@ describe("Request ride", () => {
       isDriver: true,
       password: "123456",
     };
-    const outputSignup = await signup.execute(inputSignup);
+    const outputSignup = await accountGateway.signup(inputSignup);
     const inputRequestRide = {
       passengerId: outputSignup.accountId,
       fromLat: -27.584905257808835,
@@ -95,7 +91,7 @@ describe("Request ride", () => {
       isPassenger: true,
       password: "123456",
     };
-    const outputSignup = await signup.execute(inputSignup);
+    const outputSignup = await accountGateway.signup(inputSignup);
     const inputRequestRide = {
       passengerId: outputSignup.accountId,
       fromLat: -27.584905257808835,

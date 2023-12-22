@@ -12,12 +12,12 @@ describe("Signup", () => {
     };
 
     const responseSignup = await axios.post(
-      "http://localhost:3000/signup",
+      "http://localhost:3001/signup",
       inputSignup
     );
     const outputSignup = responseSignup.data;
     const responseGetAccount = await axios.get(
-      `http://localhost:3000/accounts/${outputSignup.accountId}`
+      `http://localhost:3001/accounts/${outputSignup.accountId}`
     );
     const outputGetAccount = responseGetAccount.data;
 
@@ -34,7 +34,7 @@ describe("Signup", () => {
     };
 
     const responseSignup = await axios.post(
-      "http://localhost:3000/signup",
+      "http://localhost:3001/signup",
       inputSignup
     );
     expect(responseSignup.status).toBe(422);
@@ -51,12 +51,12 @@ describe("Signup", () => {
     };
 
     const responseSignup = await axios.post(
-      "http://localhost:3000/signup",
+      "http://localhost:3001/signup",
       inputSignup
     );
     const outputSignup = responseSignup.data;
     const responseGetAccount = await axios.get(
-      `http://localhost:3000/accounts/${outputSignup.accountId}`
+      `http://localhost:3001/accounts/${outputSignup.accountId}`
     );
     const outputGetAccount = responseGetAccount.data;
 
@@ -75,7 +75,7 @@ describe("Signup", () => {
     };
 
     const responseSignup = await axios.post(
-      "http://localhost:3000/signup",
+      "http://localhost:3001/signup",
       inputSignup
     );
     expect(responseSignup.status).toBe(422);

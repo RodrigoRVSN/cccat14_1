@@ -9,14 +9,15 @@ import { QueueController } from "./infra/queue/QueueController";
 import { Queue } from "./infra/queue/Queue";
 
 const httpServer = new ExpressAdapter()
+const queue = new Queue()
 const databaseConnection = new PgPromiseAdapter();
 const transactionRepository = new TransactionRepositoryORM(databaseConnection)
 
-const processPayment = new ProcessPayment(transactionRepository)
+const processPayment = new ProcessPayment(transactionRepository, queue)
 const getTransactionByRideId = new GetTransactionByRideId(transactionRepository)
 
 const registry = Registry.getInstance()
-registry.register("queue", new Queue())
+registry.register("queue", queue)
 registry.register("httpServer", httpServer)
 registry.register("processPayment", processPayment)
 registry.register("getTransactionByRideId", getTransactionByRideId)

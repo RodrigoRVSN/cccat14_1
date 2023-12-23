@@ -11,3 +11,12 @@ services:
       - ./create.sql:/docker-entrypoint-initdb.d/create.sql
     ports:
       - 5432:5432
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rodrigo
+      - RABBITMQ_DEFAULT_PASS=rodrigo
+    ports:
+      - "5672:5672"
+      - "15672:15672"

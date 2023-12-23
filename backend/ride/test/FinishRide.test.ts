@@ -12,6 +12,7 @@ import { FinishRide } from "../src/application/usecase/FinishRide";
 import { AccountGatewayHttp } from "../src/infra/gateway/AccountGatewayHttp";
 import { AccountGateway } from "../src/application/gateway/AccountGateway";
 import { PaymentGatewayHttp } from "../src/infra/gateway/PaymentGatewayHttp";
+import { Queue } from "../src/infra/queue/Queue";
 
 let requestRide: RequestRide;
 let getRide: GetRide;
@@ -36,8 +37,8 @@ describe("FinishRide", () => {
     acceptRide = new AcceptRide(rideDAO, accountGateway);
     startRide = new StartRide(rideDAO);
     updatePosition = new UpdatePosition(rideDAO, positionRepository);
-    const paymentGateway = new PaymentGatewayHttp()
-    finishRide = new FinishRide(rideDAO, paymentGateway);
+    const queue = new Queue()
+    finishRide = new FinishRide(rideDAO, queue);
   });
 
   afterEach(async () => {
@@ -100,6 +101,6 @@ describe("FinishRide", () => {
     const outputGetRide = await getRide.execute(outputRequestRide.rideId);
     expect(outputGetRide.status).toBe("completed");
     expect(outputGetRide.distance).toBe(10);
-    expect(outputGetRide.fare).toBe(50);
+    expect(outputGetRide.fare).toBe(21);
   });
 });
